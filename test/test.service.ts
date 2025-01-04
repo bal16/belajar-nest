@@ -33,11 +33,35 @@ export class TestService {
     });
   }
 
+  async createContact() {
+    await this.prismaService.contact.create({
+      data: {
+        username: 'test',
+        first_name: 'test',
+        last_name: '1',
+        email: 'test@test.test',
+        phone: '08123456789',
+      },
+    });
+  }
+
+  async getContact() {
+    return await this.prismaService.contact.findFirst({
+      where: {
+        username: 'test',
+      },
+    });
+  }
+
   async deleteContact() {
     await this.prismaService.contact.deleteMany({
       where: {
         username: 'test',
       },
     });
+  }
+
+  sampleCuid() {
+    return 'cm5i6f2w800020cjyfyeacpc9';
   }
 }

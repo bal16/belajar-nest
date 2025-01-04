@@ -96,6 +96,57 @@ describe('ContactController (e2e)', () => {
     });
   });
 
+  describe('[Get Contact By Id API] GET /api/contacts/:contactId', () => {
+    beforeEach(async () => {
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+    });
+
+    it('should rejected if token is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + testService.sampleCuid())
+        .set('Authorization', 'salah');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be be rejected if contact is not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + testService.sampleCuid())
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to get contact', async () => {
+      const contact = await testService.getContact();
+      logger.info(contact.id);
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + contact.id)
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.username).toBe('test');
+      expect(response.body.data.first_name).toBe('test');
+      expect(response.body.data.last_name).toBe('1');
+      expect(response.body.data.email).toBe('test@test.test');
+      expect(response.body.data.phone).toBe('08123456789');
+    });
+  });
+
   // describe('[Login User API] POST /api/users/login', () => {
   //   beforeEach(async () => {
   //     await testService.deleteUser();
@@ -133,38 +184,6 @@ describe('ContactController (e2e)', () => {
   //     expect(response.body.data.username).toBe('test');
   //     expect(response.body.data.name).toBe('test');
   //     expect(response.body.data.token).toBeDefined();
-  //   });
-  // });
-
-  // describe('[Get Current User API] GET /api/users/current', () => {
-  //   beforeEach(async () => {
-  //     await testService.deleteUser();
-  //     await testService.createUser();
-  //   });
-
-  //   it('should rejected if token is invalid', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .get('/api/users/current')
-  //       .set('Authorization', 'salah');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(401);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.errors).toBeDefined();
-  //   });
-
-  //   it('should be able to get current user data', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .get('/api/users/current')
-  //       .set('Authorization', 'test');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data.username).toBe('test');
-  //     expect(response.body.data.name).toBe('test');
   //   });
   // });
 
