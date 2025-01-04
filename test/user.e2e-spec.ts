@@ -25,6 +25,10 @@ describe('UserController (e2e)', () => {
     testService = app.get(TestService);
   });
 
+  afterAll(async () => {
+    await testService.deleteUser();
+  });
+
   describe('[Register User API] POST /api/users', () => {
     beforeEach(async () => {
       await testService.deleteUser();
