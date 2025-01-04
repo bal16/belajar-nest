@@ -9,4 +9,12 @@ export class ContactValidation {
   });
 
   static readonly ID: ZodType = z.string().min(1).max(100).cuid();
+
+  static readonly UPDATE: ZodType = z.object({
+    id: this.ID,
+    first_name: z.string().min(1).max(100).optional(),
+    last_name: z.string().min(1).max(100).optional(),
+    email: z.string().min(1).max(100).email().optional(),
+    phone: z.string().min(1).max(20).optional(),
+  });
 }

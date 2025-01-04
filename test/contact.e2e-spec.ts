@@ -147,164 +147,83 @@ describe('ContactController (e2e)', () => {
     });
   });
 
-  // describe('[Login User API] POST /api/users/login', () => {
-  //   beforeEach(async () => {
-  //     await testService.deleteUser();
-  //     await testService.createUser();
-  //   });
+  describe('[Update Contact API] POST /api/contacts/:contactId', () => {
+    beforeEach(async () => {
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+    });
 
-  //   it('should rejected if request is invalid', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .post('/api/users/login')
-  //       .send({
-  //         username: '',
-  //         password: '',
-  //       });
+    it('should rejected if token is invalid', async () => {
+      const contact = await testService.getContact();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id)
+        .set('Authorization', 'salah')
+        .send({
+          phone: '12345',
+        });
 
-  //     logger.info(response.body);
+      logger.info(response.body);
 
-  //     expect(response.status).toBe(400);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.errors).toBeDefined();
-  //     expect(response.body.data).toBeDefined();
-  //   });
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
 
-  //   it('should be able to login', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .post('/api/users/login')
-  //       .send({
-  //         username: 'test',
-  //         password: 'test',
-  //       });
+    it('should rejected if contactId is invalid', async () => {
+      const id = testService.sampleCuid();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts' + id)
+        .set('Authorization', 'test')
+        .send({
+          email: 'salah@salah.test',
+        });
 
-  //     logger.info(response.body);
+      logger.info(response.body);
 
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data.username).toBe('test');
-  //     expect(response.body.data.name).toBe('test');
-  //     expect(response.body.data.token).toBeDefined();
-  //   });
-  // });
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
 
-  // describe('[Update User API] PATCH /api/users/current', () => {
-  //   beforeEach(async () => {
-  //     await testService.deleteUser();
-  //     await testService.createUser();
-  //   });
+    it('should rejected if request is invalid', async () => {
+      const contact = await testService.getContact();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id)
+        .set('Authorization', 'test')
+        .send({
+          email: 'salah',
+        });
 
-  //   it('should rejected if token is invalid', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .patch('/api/users/current')
-  //       .set('Authorization', 'salah')
-  //       .send({
-  //         name: 'test update',
-  //       });
+      logger.info(response.body);
 
-  //     logger.info(response.body);
+      expect(response.status).toBe(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.data).toBeDefined();
+    });
 
-  //     expect(response.status).toBe(401);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.errors).toBeDefined();
-  //   });
+    it('should be able to update contact', async () => {
+      const contact = await testService.getContact();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id)
+        .set('Authorization', 'test')
+        .send({
+          first_name: 'test update',
+          last_name: '2',
+          email: 'updated@test.test',
+          phone: '1234567890',
+        });
 
-  //   it('should rejected if request is invalid', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .patch('/api/users/current')
-  //       .set('Authorization', 'test')
-  //       .send({
-  //         name: '',
-  //         password: '',
-  //       });
+      logger.info(response.body);
 
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(400);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.errors).toBeDefined();
-  //     expect(response.body.data).toBeDefined();
-  //   });
-
-  //   it('should be able to update name', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .patch('/api/users/current')
-  //       .send({
-  //         username: 'test',
-  //         name: 'test updated',
-  //       })
-  //       .set('Authorization', 'test');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data.username).toBe('test');
-  //     expect(response.body.data.name).toBe('test updated');
-  //   });
-
-  //   it('should be able to update password', async () => {
-  //     let response = await request(app.getHttpServer())
-  //       .patch('/api/users/current')
-  //       .send({
-  //         username: 'test',
-  //         password: 'test updated',
-  //       })
-  //       .set('Authorization', 'test');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data.username).toBe('test');
-  //     expect(response.body.data.name).toBe('test');
-
-  //     response = await request(app.getHttpServer())
-  //       .post('/api/users/login')
-  //       .send({
-  //         username: 'test',
-  //         password: 'test updated',
-  //       });
-
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data.username).toBe('test');
-  //     expect(response.body.data.name).toBe('test');
-  //     expect(response.body.data.token).toBeDefined();
-  //   });
-  // });
-
-  // describe('[Logout Current User API] DELETE /api/users/current', () => {
-  //   beforeEach(async () => {
-  //     await testService.deleteUser();
-  //     await testService.createUser();
-  //   });
-
-  //   it('should rejected if token is invalid', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .delete('/api/users/current')
-  //       .set('Authorization', 'salah');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(401);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.errors).toBeDefined();
-  //   });
-
-  //   it('should be able to logout', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .delete('/api/users/current')
-  //       .set('Authorization', 'test');
-
-  //     logger.info(response.body);
-
-  //     expect(response.status).toBe(200);
-  //     expect(response.body).toBeDefined();
-  //     expect(response.body.data).toBe(true);
-
-  //     const user = await testService.getUser();
-
-  //     expect(user.token).toBeNull();
-  //   });
-  // });
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.first_name).toBe('test update');
+      expect(response.body.data.last_name).toBe('2');
+      expect(response.body.data.email).toBe('updated@test.test');
+      expect(response.body.data.phone).toBe('1234567890');
+    });
+  });
 });
