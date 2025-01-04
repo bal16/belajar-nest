@@ -2,10 +2,15 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from '@common/prisma.service';
 import { ValidationService } from '@common/validation.service';
-import { RegisterUserRequest, UserResponse } from 'src/model/user.model';
+import {
+  LoginUserRequest,
+  RegisterUserRequest,
+  UserResponse,
+} from 'src/model/user.model';
 import { Logger } from 'winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -15,7 +20,7 @@ export class UserService {
     private prismaService: PrismaService,
   ) {}
   async register(req: RegisterUserRequest): Promise<UserResponse> {
-    this.logger.info(`register new user ${JSON.stringify(req)}`);
+    this.logger.info(`userService.register (${JSON.stringify(req)})`);
     const registerReq = this.validationService.validate(
       UserValidation.REGISTER,
       req,
@@ -39,6 +44,43 @@ export class UserService {
     return {
       username: user.username,
       name: user.name,
+    };
+  }
+
+  async login(req: LoginUserRequest): Promise<UserResponse> {
+    this.logger.info(`userService.login (${JSON.stringify(req)})`);
+
+    const loginReq = this.validationService.validate(UserValidation.LOGIN, req);
+
+    let user = await this.prismaService.user.findUnique({
+      where: {
+        username: loginReq.username,
+      },
+    });
+
+    if (!user) throw new HttpException('Credentials is invalid', 401);
+
+    const isPasswordValid = await bcrypt.compare(
+      loginReq.password,
+      user.password,
+    );
+
+    if (!isPasswordValid)
+      throw new HttpException('Credentials is invalid', 401);
+
+    user = await this.prismaService.user.update({
+      where: {
+        username: user.username,
+      },
+      data: {
+        token: uuid(),
+      },
+    });
+
+    return {
+      username: user.username,
+      name: user.name,
+      token: user.token,
     };
   }
 }
