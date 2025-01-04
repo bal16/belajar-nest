@@ -8,9 +8,9 @@ Request Body :
 
 ```json
 {
-  "username" : "khannedy",
+  "username" : "blly",
   "password" : "rahasia",
-  "name" : "Eko Khannedy"
+  "name" : "Ahmad Hamid Balya"
 }
 ```
 
@@ -19,8 +19,8 @@ Response Body (Success) :
 ```json
 {
   "data" : {
-    "username" : "khannedy",
-    "name" : "Eko Khannedy"
+    "username" : "blly",
+    "name" : "Ahmad Hamid Balya"
   }
 }
 ```
@@ -41,7 +41,7 @@ Request Body :
 
 ```json
 {
-  "username" : "khannedy",
+  "username" : "blly",
   "password" : "rahasia"
 }
 ```
@@ -51,8 +51,8 @@ Response Body (Success) :
 ```json
 {
   "data" : {
-    "username" : "khannedy",
-    "name" : "Eko Khannedy",
+    "username" : "blly",
+    "name" : "Ahmad Hamid Balya",
     "token" : "session_id_generated"
   }
 }
@@ -78,8 +78,8 @@ Response Body (Success) :
 ```json
 {
   "data" : {
-    "username" : "khannedy",
-    "name" : "Eko Khannedy"
+    "username" : "blly",
+    "name" : "Ahmad Hamid Balya"
   }
 }
 ```
@@ -104,7 +104,7 @@ Request Body :
 ```json
 {
   "password" : "rahasia", // optional, if want to change password
-  "name" : "Eko Khannedy" // optional, if want to change name
+  "name" : "Ahmad Hamid Balya" // optional, if want to change name
 }
 ```
 
@@ -113,8 +113,8 @@ Response Body (Success) :
 ```json
 {
   "data" : {
-    "username" : "khannedy",
-    "name" : "Eko Khannedy"
+    "username" : "blly",
+    "name" : "Ahmad Hamid Balya"
   }
 }
 ```

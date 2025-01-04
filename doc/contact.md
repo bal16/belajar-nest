@@ -11,9 +11,9 @@ Request Body :
 
 ```json
 {
-  "first_name" : "Eko Kurniawan",
-  "last_name" : "Khannedy",
-  "email" : "eko@example.com",
+  "first_name" : "Ahmad Hamid",
+  "last_name" : "Balya",
+  "email" : "blly@example.com",
   "phone" : "08999999999"
 }
 ```
@@ -24,9 +24,9 @@ Response Body :
 {
   "data" : {
     "id" : "cuid",
-    "first_name" : "Eko Kurniawan",
-    "last_name" : "Khannedy",
-    "email" : "eko@example.com",
+    "first_name" : "Ahmad Hamid",
+    "last_name" : "Balya",
+    "email" : "blly@example.com",
     "phone" : "08999999999"
   } 
 }
@@ -45,9 +45,9 @@ Response Body :
 {
   "data" : {
     "id" : "cuid",
-    "first_name" : "Eko Kurniawan",
-    "last_name" : "Khannedy",
-    "email" : "eko@example.com",
+    "first_name" : "Ahmad Hamid",
+    "last_name" : "Balya",
+    "email" : "blly@example.com",
     "phone" : "08999999999"
   } 
 }
@@ -64,9 +64,9 @@ Request Body :
 
 ```json
 {
-  "first_name" : "Eko Kurniawan",
-  "last_name" : "Khannedy",
-  "email" : "eko@example.com",
+  "first_name" : "Ahmad Hamid",
+  "last_name" : "Balya",
+  "email" : "blly@example.com",
   "phone" : "08999999999"
 }
 ```
@@ -77,9 +77,9 @@ Response Body :
 {
   "data" : {
     "id" : "cuid",
-    "first_name" : "Eko Kurniawan",
-    "last_name" : "Khannedy",
-    "email" : "eko@example.com",
+    "first_name" : "Ahmad Hamid",
+    "last_name" : "Balya",
+    "email" : "blly@example.com",
     "phone" : "08999999999"
   } 
 }
@@ -121,23 +121,16 @@ Response Body :
   "data" : [
     {
       "id" : "cuid",
-      "first_name" : "Eko Kurniawan",
-      "last_name" : "Khannedy",
-      "email" : "eko@example.com",
+      "first_name" : "Ahmad Hamid",
+      "last_name" : "Balya",
+      "email" : "blly@example.com",
       "phone" : "08999999999"
     },
-    {
-      "id" : "cuid",
-      "first_name" : "Eko Kurniawan",
-      "last_name" : "Khannedy",
-      "email" : "eko@example.com",
-      "phone" : "08999999999"
-    }
   ],
   "paging" : {
     "current_page" : 1,
-    "total_page" : 10,
-    "size" : 10
+    "total_page" : 1,
+    "size" : 1
   }
 }
 ```
