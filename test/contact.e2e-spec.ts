@@ -273,4 +273,217 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data).toBe(true);
     });
   });
+
+  describe('[Search Contact API] GET /api/contacts', () => {
+    beforeEach(async () => {
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+      await testService.createContact();
+    });
+
+    it('should rejected if token is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .set('Authorization', 'salah');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to search contacts', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by name, email, and phone at the same time', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          name: 'tes',
+          email: 'test',
+          phone: '123',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by name', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          name: 'tes',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by name and return zero array', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          name: 'tidak ada',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(0);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by email', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          email: 'tes',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by email and return zero array', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          email: 'tidak ada',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(0);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by phone', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          phone: '789',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts by phone and return zero array', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          phone: '10000000',
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(0);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts then go to another page', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          phone: '789',
+          page: 5,
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(0);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(5);
+      expect(response.body.paging.total_page).toBe(1);
+      expect(response.body.paging.size).toBe(10);
+    });
+
+    it('should be able to search contacts then split it down into pages', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts')
+        .query({
+          phone: '789',
+          size: 1,
+        })
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(1);
+      expect(response.body.paging).toBeDefined();
+      expect(response.body.paging.current_page).toBe(1);
+      expect(response.body.paging.total_page).toBe(2);
+      expect(response.body.paging.size).toBe(1);
+    });
+  });
 });

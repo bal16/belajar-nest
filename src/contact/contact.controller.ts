@@ -5,8 +5,10 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { WebResponse } from '@model/web.model';
 import {
@@ -72,5 +74,25 @@ export class ContactController {
     return {
       data: true,
     };
+  }
+
+  @Get()
+  async search(
+    @Auth() user: User,
+    @Query('name') name?: string,
+    @Query('email') email?: string,
+    @Query('phone') phone?: string,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('size', new ParseIntPipe({ optional: true })) size?: number,
+  ): Promise<WebResponse<ContactResponse[]>> {
+    const result = await this.userService.search(user, {
+      name,
+      email,
+      phone,
+      page: page || 1,
+      size: size || 10,
+    });
+
+    return result;
   }
 }
