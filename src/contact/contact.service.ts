@@ -54,9 +54,7 @@ export class ContactService {
   }
 
   async getById(user: User, id: string): Promise<ContactResponse> {
-    this.logger.debug(
-      `contactService.create (${JSON.stringify(user)}, ${JSON.stringify(id)})`,
-    );
+    this.logger.debug(`contactService.create (${JSON.stringify(user)}, ${id})`);
 
     const validId: string = this.validationService.validate(
       ContactValidation.ID,
@@ -89,6 +87,26 @@ export class ContactService {
         username: contact.username,
       },
       data: updateReq,
+    });
+
+    return contact;
+  }
+
+  async delete(user: User, id: string): Promise<ContactResponse> {
+    this.logger.debug(`contactService.delete (${id})`);
+
+    const validId: string = this.validationService.validate(
+      ContactValidation.ID,
+      id,
+    );
+
+    await this.contactMustExist(validId, user.username);
+
+    const contact = await this.prismaService.contact.delete({
+      where: {
+        id: validId,
+        username: user.username,
+      },
     });
 
     return contact;

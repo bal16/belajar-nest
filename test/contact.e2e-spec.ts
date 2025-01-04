@@ -226,4 +226,51 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.phone).toBe('1234567890');
     });
   });
+
+  describe('[Delete Contact By Id API] GET /api/contacts/:contactId', () => {
+    beforeEach(async () => {
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+    });
+
+    it('should rejected if token is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .delete('/api/contacts/' + testService.sampleCuid())
+        .set('Authorization', 'salah');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be be rejected if contact is not found', async () => {
+      const response = await request(app.getHttpServer())
+        .delete('/api/contacts/' + testService.sampleCuid())
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to remove contact', async () => {
+      const contact = await testService.getContact();
+      logger.info(contact.id);
+      const response = await request(app.getHttpServer())
+        .delete('/api/contacts/' + contact.id)
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data).toBe(true);
+    });
+  });
 });
