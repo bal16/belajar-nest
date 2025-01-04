@@ -236,21 +236,40 @@ describe('UserController (e2e)', () => {
       expect(response.body.data.name).toBe('test');
       expect(response.body.data.token).toBeDefined();
     });
+  });
 
-    // it('should be rejected if username already exists', async () => {
-    //   await testService.createUser();
-    //   const response = await request(app.getHttpServer())
-    //     .post('/api/users/current')
-    //     .send({
-    //       username: 'test',
-    //       password: 'test',
-    //       name: 'test',
-    //     });
+  describe('[Logout Current User API] DELETE /api/users/current', () => {
+    beforeEach(async () => {
+      await testService.deleteUser();
+      await testService.createUser();
+    });
 
-    //   logger.info(response.body);
+    it('should rejected if token is invalid', async () => {
+      const response = await request(app.getHttpServer())
+        .delete('/api/users/current')
+        .set('Authorization', 'salah');
 
-    //   expect(response.status).toBe(400);
-    //   expect(response.body.errors).toBeDefined();
-    // });
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to logout', async () => {
+      const response = await request(app.getHttpServer())
+        .delete('/api/users/current')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data).toBe(true);
+
+      const user = await testService.getUser();
+
+      expect(user.token).toBeNull();
+    });
   });
 });
