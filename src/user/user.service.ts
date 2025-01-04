@@ -5,6 +5,7 @@ import { ValidationService } from '@common/validation.service';
 import {
   LoginUserRequest,
   RegisterUserRequest,
+  UpdateUserRequest,
   UserResponse,
 } from 'src/model/user.model';
 import { Logger } from 'winston';
@@ -21,8 +22,9 @@ export class UserService {
     private prismaService: PrismaService,
   ) {}
   async register(req: RegisterUserRequest): Promise<UserResponse> {
-    this.logger.info(`userService.register (${JSON.stringify(req)})`);
-    const registerReq = this.validationService.validate(
+    this.logger.debug(`userService.register (${JSON.stringify(req)})`);
+
+    const registerReq: RegisterUserRequest = this.validationService.validate(
       UserValidation.REGISTER,
       req,
     );
@@ -37,11 +39,12 @@ export class UserService {
       throw new HttpException('Username already exists', 400);
     }
 
-    req.password = await bcrypt.hash(req.password, 10);
+    registerReq.password = await bcrypt.hash(registerReq.password, 10);
 
     const user = await this.prismaService.user.create({
-      data: req,
+      data: registerReq,
     });
+
     return {
       username: user.username,
       name: user.name,
@@ -49,9 +52,12 @@ export class UserService {
   }
 
   async login(req: LoginUserRequest): Promise<UserResponse> {
-    this.logger.info(`userService.login (${JSON.stringify(req)})`);
+    this.logger.debug(`userService.login (${JSON.stringify(req)})`);
 
-    const loginReq = this.validationService.validate(UserValidation.LOGIN, req);
+    const loginReq: LoginUserRequest = this.validationService.validate(
+      UserValidation.LOGIN,
+      req,
+    );
 
     let user = await this.prismaService.user.findUnique({
       where: {
@@ -89,6 +95,34 @@ export class UserService {
     return {
       username: user.username,
       name: user.name,
+    };
+  }
+
+  async update(user: User, req: UpdateUserRequest): Promise<UserResponse> {
+    this.logger.debug(
+      `userService.login (${JSON.stringify(user)}, ${JSON.stringify(req)})`,
+    );
+
+    const updateReq: UpdateUserRequest = this.validationService.validate(
+      UserValidation.UPDATE,
+      req,
+    );
+
+    if (updateReq.name) user.name = updateReq.name;
+
+    if (updateReq.password)
+      user.password = await bcrypt.hash(updateReq.password, 10);
+
+    const result = await this.prismaService.user.update({
+      where: {
+        username: user.username,
+      },
+      data: user,
+    });
+
+    return {
+      username: result.username,
+      name: result.name,
     };
   }
 }
