@@ -56,6 +56,23 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
+    it('should rejected if contactId is invalid', async () => {
+      const contactId = testService.sampleCuid();
+      const response = await request(app.getHttpServer())
+        .post('/api/contacts/' + contactId + '/addresses')
+        .set('Authorization', 'test')
+        .send({
+          country: 'test country',
+          postalCode: '123456',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
     it('should rejected if request is invalid', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
