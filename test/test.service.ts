@@ -61,6 +61,16 @@ export class TestService {
     });
   }
 
+  async deleteAddress() {
+    await this.prismaService.address.deleteMany({
+      where: {
+        contact: {
+          username: 'test',
+        },
+      },
+    });
+  }
+
   sampleCuid() {
     return 'cm5i6f2w800020cjyfyeacpc9';
   }
