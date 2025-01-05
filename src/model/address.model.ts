@@ -12,6 +12,8 @@ export class GetAddressByIdParams {
   addressId: string;
 }
 
+export class DeleteAddressByIdParams extends GetAddressByIdParams {}
+
 export class UpdateAddressRequest extends CreateAddressRequest {
   id: string;
 }

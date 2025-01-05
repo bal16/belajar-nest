@@ -8,6 +8,7 @@ import { Address, User } from '@prisma/client';
 import {
   AddressResponse,
   CreateAddressRequest,
+  DeleteAddressByIdParams,
   GetAddressByIdParams,
   UpdateAddressRequest,
 } from '@model/address.model';
@@ -115,6 +116,39 @@ export class AddressService {
         contactId: address.contactId,
       },
       data: updateReq,
+    });
+
+    return address;
+  }
+
+  async remove(
+    user: User,
+    req: DeleteAddressByIdParams,
+  ): Promise<AddressResponse> {
+    this.logger.debug(
+      `addressService.remove (${JSON.stringify(user)}, ${JSON.stringify(req)})`,
+    );
+
+    const deleteReq: DeleteAddressByIdParams = this.validationService.validate(
+      AddressValidation.DELETE,
+      req,
+    );
+
+    await this.contactService.contactMustExist(
+      deleteReq.contactId,
+      user.username,
+    );
+
+    let address = await this.addressMustExist(
+      deleteReq.addressId,
+      deleteReq.contactId,
+    );
+
+    address = await this.prismaService.address.delete({
+      where: {
+        id: address.id,
+        contactId: address.contactId,
+      },
     });
 
     return address;

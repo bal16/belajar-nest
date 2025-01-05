@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { WebResponse } from '@model/web.model';
 import { Auth } from '@common/auth.decorator';
 import { User } from '@prisma/client';
@@ -56,6 +64,22 @@ export class AddressController {
 
     return {
       data: result,
+    };
+  }
+
+  @Delete('/:id')
+  async remove(
+    @Auth() user: User,
+    @Param('contactId') contactId: string,
+    @Param('id') addressId: string,
+  ): Promise<WebResponse<boolean>> {
+    await this.addressService.remove(user, {
+      contactId,
+      addressId,
+    });
+
+    return {
+      data: true,
     };
   }
 }
