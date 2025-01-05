@@ -200,6 +200,114 @@ describe('ContactController (e2e)', () => {
     });
   });
 
+  describe('[Update Address API] PATCh /api/contacts/:contactId/addresses/:addressId', () => {
+    beforeEach(async () => {
+      await testService.deleteAddress();
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+      await testService.createAddress();
+    });
+
+    it('should rejected if token is invalid', async () => {
+      const contact = await testService.getContact();
+      const address = await testService.getAddress();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id + '/addresses/' + address.id)
+        .set('Authorization', 'salah')
+        .send({
+          username: 'test',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should rejected if contactId is invalid', async () => {
+      const contactId = testService.sampleCuid();
+      const address = await testService.getAddress();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contactId + '/addresses/' + address.id)
+        .set('Authorization', 'test')
+        .send({
+          country: 'test country',
+          postalCode: '123456',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should rejected if addressId is invalid', async () => {
+      const contact = await testService.getContact();
+      const addressId = testService.sampleCuid();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id + '/addresses/' + addressId)
+        .set('Authorization', 'test')
+        .send({
+          country: 'test country',
+          postalCode: '123456',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should rejected if request is invalid', async () => {
+      const contact = await testService.getContact();
+      const address = await testService.getAddress();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id + '/addresses/' + address.id)
+        .set('Authorization', 'test')
+        .send({
+          country: '',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.data).toBeDefined();
+    });
+
+    it('should be able to update address', async () => {
+      const contact = await testService.getContact();
+      const address = await testService.getAddress();
+      const response = await request(app.getHttpServer())
+        .patch('/api/contacts/' + contact.id + '/addresses/' + address.id)
+        .set('Authorization', 'test')
+        .send({
+          street: 'street test update',
+          city: 'city test update',
+          province: 'province test update',
+          country: 'country test update',
+          postalCode: '654321',
+        });
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.id).toBeDefined();
+      expect(response.body.data.street).toBe('street test update');
+      expect(response.body.data.city).toBe('city test update');
+      expect(response.body.data.province).toBe('province test update');
+      expect(response.body.data.country).toBe('country test update');
+      expect(response.body.data.postalCode).toBe('654321');
+    });
+  });
+
   // describe('[Update Contact API] POST /api/contacts/:contactId', () => {
   //   beforeEach(async () => {
   //     await testService.deleteContact();

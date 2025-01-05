@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { WebResponse } from '@model/web.model';
 import { Auth } from '@common/auth.decorator';
 import { User } from '@prisma/client';
 import { AddressService } from './address.service';
-import { AddressResponse, CreateAddressRequest } from '@model/address.model';
+import {
+  AddressResponse,
+  CreateAddressRequest,
+  UpdateAddressRequest,
+} from '@model/address.model';
 
 @Controller('/api/contacts/:contactId/addresses')
 export class AddressController {
@@ -33,6 +37,22 @@ export class AddressController {
       contactId,
       addressId,
     });
+
+    return {
+      data: result,
+    };
+  }
+
+  @Patch('/:id')
+  async update(
+    @Auth() user: User,
+    @Param('contactId') contactId: string,
+    @Param('id') addressId: string,
+    @Body() req: UpdateAddressRequest,
+  ): Promise<WebResponse<AddressResponse>> {
+    req.id = addressId;
+    req.contactId = contactId;
+    const result = await this.addressService.update(user, req);
 
     return {
       data: result,

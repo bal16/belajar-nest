@@ -12,6 +12,10 @@ export class GetAddressByIdParams {
   addressId: string;
 }
 
+export class UpdateAddressRequest extends CreateAddressRequest {
+  id: string;
+}
+
 export class AddressResponse {
   id: string;
   address?: string;

@@ -55,7 +55,7 @@ Response Body :
 
 ## Update Contact
 
-Endpoint : PUT /api/contacts/:contactId
+Endpoint : PATCH /api/contacts/:contactId
 
 Headers :
 - Authorization: token
