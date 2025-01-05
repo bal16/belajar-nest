@@ -22,14 +22,14 @@ import { ContactService } from './contact.service';
 
 @Controller('/api/contacts')
 export class ContactController {
-  constructor(private userService: ContactService) {}
+  constructor(private contactService: ContactService) {}
 
   @Post()
   async create(
     @Auth() user: User,
     @Body() req: CreateContactRequest,
   ): Promise<WebResponse<ContactResponse>> {
-    const result = await this.userService.create(user, req);
+    const result = await this.contactService.create(user, req);
 
     return {
       data: result,
@@ -41,7 +41,7 @@ export class ContactController {
     @Auth() user: User,
     @Param('contactId') id: string,
   ): Promise<WebResponse<ContactResponse>> {
-    const result = await this.userService.getById(user, id);
+    const result = await this.contactService.getById(user, id);
     return {
       data: result,
     };
@@ -56,7 +56,7 @@ export class ContactController {
   ): Promise<WebResponse<ContactResponse>> {
     req.id = id;
 
-    const result = await this.userService.update(user, req);
+    const result = await this.contactService.update(user, req);
 
     return {
       data: result,
@@ -69,7 +69,7 @@ export class ContactController {
     @Auth() user: User,
     @Param('contactId') id: string,
   ): Promise<WebResponse<boolean>> {
-    await this.userService.delete(user, id);
+    await this.contactService.delete(user, id);
 
     return {
       data: true,
@@ -85,7 +85,7 @@ export class ContactController {
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('size', new ParseIntPipe({ optional: true })) size?: number,
   ): Promise<WebResponse<ContactResponse[]>> {
-    const result = await this.userService.search(user, {
+    const result = await this.contactService.search(user, {
       name,
       email,
       phone,
