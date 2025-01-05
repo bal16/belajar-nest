@@ -435,6 +435,12 @@ describe('ContactController (e2e)', () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body.data.length).toBe(2);
+      expect(response.body.data[0].id).toBeDefined();
+      expect(response.body.data[0].street).toBe('street test');
+      expect(response.body.data[0].city).toBe('city test');
+      expect(response.body.data[0].province).toBe('province test');
+      expect(response.body.data[0].country).toBe('country test');
+      expect(response.body.data[0].postalCode).toBe('123456');
     });
   });
 });
