@@ -61,6 +61,29 @@ export class TestService {
     });
   }
 
+  async createAddress() {
+    const contact = await this.getContact();
+    await this.prismaService.address.create({
+      data: {
+        street: 'street test',
+        city: 'city test',
+        province: 'province test',
+        country: 'country test',
+        postalCode: '123456',
+        contactId: contact.id,
+      },
+    });
+  }
+
+  async getAddress() {
+    const contact = await this.getContact();
+    return await this.prismaService.address.findFirst({
+      where: {
+        contactId: contact.id,
+      },
+    });
+  }
+
   async deleteAddress() {
     await this.prismaService.address.deleteMany({
       where: {

@@ -7,6 +7,11 @@ export class CreateAddressRequest {
   postalCode: string;
 }
 
+export class GetAddressByIdParams {
+  contactId: string;
+  addressId: string;
+}
+
 export class AddressResponse {
   id: string;
   address?: string;

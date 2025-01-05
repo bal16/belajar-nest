@@ -15,7 +15,7 @@ Request Body :
   "city" : "Kota, optional",
   "province" : "Provinsi, optional",
   "country" : "Negara Apa",
-  "postal_code" : "123123" 
+  "postalCode" : "123123" 
 }
 ```
 
@@ -29,7 +29,7 @@ Response Body
     "city" : "Kota, optional",
     "province" : "Provinsi, optional",
     "country" : "Negara Apa",
-    "postal_code" : "123123"
+    "postalCode" : "123123"
   } 
 }
 ```
@@ -51,7 +51,7 @@ Response Body
     "city" : "Kota, optional",
     "province" : "Provinsi, optional",
     "country" : "Negara Apa",
-    "postal_code" : "123123"
+    "postalCode" : "123123"
   } 
 }
 ```
@@ -71,7 +71,7 @@ Request Body :
   "city" : "Kota, optional",
   "province" : "Provinsi, optional",
   "country" : "Negara Apa",
-  "postal_code" : "123123" 
+  "postalCode" : "123123" 
 }
 ```
 
@@ -85,7 +85,7 @@ Response Body
     "city" : "Kota, optional",
     "province" : "Provinsi, optional",
     "country" : "Negara Apa",
-    "postal_code" : "123123"
+    "postalCode" : "123123"
   } 
 }
 ```
@@ -123,7 +123,7 @@ Response Body
       "city" : "Kota, optional",
       "province" : "Provinsi, optional",
       "country" : "Negara Apa",
-      "postal_code" : "123123"
+      "postalCode" : "123123"
     },
     {
       "id" : "cuid",
@@ -131,7 +131,7 @@ Response Body
       "city" : "Kota, optional",
       "province" : "Provinsi, optional",
       "country" : "Negara Apa",
-      "postal_code" : "123123"
+      "postalCode" : "123123"
     }
   ]
 }
