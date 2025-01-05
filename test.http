@@ -1,0 +1,134 @@
+POST http://localhost:3000/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username" : "blly",
+  "name" : "Ahmad Hamid Balya",
+  "password" : "rahasia"
+}
+
+### Login
+
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username" : "blly",
+  "password" : "rahasia12345"
+}
+{{
+    token = response.parsedBody.data.token
+}}
+
+### Get User
+GET http://localhost:3000/api/users/current
+Accept: application/json
+Authorization: {{token}}
+
+### Logout User
+DELETE http://localhost:3000/api/users/current
+Accept: application/json
+Authorization: {{token}}
+
+### Update User
+PATCH http://localhost:3000/api/users/current
+Accept: application/json
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "password" : "rahasia12345"
+}
+
+### Create contact
+POST http://localhost:3000/api/contacts
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+{
+  "first_name" : "test",
+  "last_name" : "user",
+  "email" : "test@test.test",
+  "phone" : "089999999"
+}
+{{
+    contactId = response.parsedBody.data.id
+}}
+
+### Update contact
+PATCH http://localhost:3000/api/contacts/{{contactId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+{
+  "first_name" : "Budi",
+  "last_name" : "Morro",
+  "email" : "budi@example.com",
+  "phone" : "089999999"
+}
+
+
+### Get contact
+GET http://localhost:3000/api/contacts/{{contactId}}
+Accept: application/json
+Authorization: {{token}}
+
+### Delete contact
+DELETE http://localhost:3000/api/contacts/{{contactId}}
+Accept: application/json
+Authorization: {{token}}
+
+### Search contact
+GET http://localhost:3000/api/contacts
+Accept: application/json
+Authorization: {{token}}
+
+### Create Address
+POST http://localhost:3000/api/contacts/{{contactId}}/addresses
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+{
+  "street" : "jalan contoh",
+  "city" : "kota contoh",
+  "province" : "provinsi contoh",
+  "country" : "negara contoh",
+  "postalCode" : "23434"
+}
+{{
+  addressId = response.parsedBody.data.id
+}}
+
+### Get Address
+GET http://localhost:3000/api/contacts/{{contactId}}/addresses/{{addressId}}
+Accept: application/json
+Authorization: {{token}}
+
+### List Address
+GET http://localhost:3000/api/contacts/{{contactId}}/addresses
+Accept: application/json
+Authorization: {{token}}
+
+### Update Address
+PATCH http://localhost:3000/api/contacts/{{contactId}}/addresses/{{addressId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+{
+  "street" : "jalan contoh updated",
+  "city" : "kota contoh updated",
+  "province" : "provinsi contoh",
+  "country" : "negara contoh",
+  "postalCode" : "23434"
+}
+
+### Remove Address
+DELETE http://localhost:3000/api/contacts/{{contactId}}/addresses/{{addressId}}
+Accept: application/json
+Authorization: {{token}}
