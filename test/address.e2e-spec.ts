@@ -386,4 +386,55 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data).toBe(true);
     });
   });
+
+  describe('[List Address API] GET /api/contacts/:contactId/addresses', () => {
+    beforeEach(async () => {
+      await testService.deleteAddress();
+      await testService.deleteContact();
+      await testService.deleteUser();
+      await testService.createUser();
+      await testService.createContact();
+      await testService.createAddress();
+      await testService.createAddress();
+    });
+
+    it('should rejected if token is invalid', async () => {
+      const contact = await testService.getContact();
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + contact.id + '/addresses')
+        .set('Authorization', 'salah');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should rejected if contactId is invalid', async () => {
+      const contactId = testService.sampleCuid();
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + contactId + '/addresses')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should be able to get list of contact', async () => {
+      const contact = await testService.getContact();
+      const response = await request(app.getHttpServer())
+        .get('/api/contacts/' + contact.id + '/addresses')
+        .set('Authorization', 'test');
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.length).toBe(2);
+    });
+  });
 });

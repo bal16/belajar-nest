@@ -17,6 +17,8 @@ export class AddressValidation {
 
   static readonly DELETE: ZodType = this.GET;
 
+  static readonly LIST: ZodType = z.string().min(1).max(100).cuid();
+
   static readonly UPDATE: ZodType = z.object({
     id: z.string().min(1).max(100).cuid(),
     street: z.string().min(1).max(100).optional(),

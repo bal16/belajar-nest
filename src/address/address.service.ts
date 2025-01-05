@@ -153,4 +153,27 @@ export class AddressService {
 
     return address;
   }
+
+  async list(user: User, contactId: string): Promise<AddressResponse[]> {
+    this.logger.debug(
+      `addressService.list (${JSON.stringify(user)}, ${JSON.stringify(contactId)})`,
+    );
+
+    const validContactId: string = this.validationService.validate(
+      AddressValidation.LIST,
+      contactId,
+    );
+
+    console.log('🚀 ~ AddressService ~ list ~ validContactId:', validContactId);
+
+    await this.contactService.contactMustExist(validContactId, user.username);
+
+    const addresses = await this.prismaService.address.findMany({
+      where: {
+        contactId: validContactId,
+      },
+    });
+
+    return addresses;
+  }
 }
